@@ -38,8 +38,9 @@ export function initialize(instance) {
       return routeDepthClasses;
     },
 
-    addClasses: Ember.on('activate', function() {
+    _setClassNamesOnBodyElement() {
       const $body = Ember.$('body');
+      $body.removeAttr('class');
       ['bodyClasses', 'classNames'].forEach((classes) => {
         this.get(classes).forEach(function(klass) {
           $body.addClass(klass);
@@ -51,6 +52,14 @@ export function initialize(instance) {
           $body.addClass(depthClass);
         });
       }
+    },
+
+    addClasses: Ember.on('activate', function() {
+      this._setClassNamesOnBodyElement();
+    }),
+
+    updateClasses: Ember.observer('bodyClasses.[]', 'classNames.[]', function() {
+      this._setClassNamesOnBodyElement();
     }),
 
     removeClasses: Ember.on('deactivate', function() {
